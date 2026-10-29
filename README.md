@@ -138,8 +138,6 @@ mall-search  搜索服务     :8081   ← 因缺少 Elasticsearch + 配置错误
 | [自动化测试框架](docs/reports/automation-testing.md) | pytest 分层设计、fixture 污染案例、xfail 缺陷闭环 |
 | [SQL 与日志分析](docs/reports/sql-and-log-analysis.md) | 多表查询、字符集排查、Linux 日志定位命令 |
 | [测试复盘](docs/reports/retrospective.md) | 做对了什么、走了哪些弯路、下一步改进 |
-| [简历项目描述](resume/简历项目描述.md) | 可直接粘贴到简历的 STAR 条目 |
-| [面试问答](resume/面试问答.md) | 高频追问与回答要点 |
 | `test-artifacts/postman/` | Postman 集合 + 环境变量 |
 | `test-artifacts/jmeter/` | 3 个 JMX 脚本 + 账号 CSV + 稳态汇总 CSV |
 | `test-artifacts/pytest/` | pytest 框架源码（配置/工具/数据/用例） |
