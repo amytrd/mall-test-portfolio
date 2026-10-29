@@ -6,7 +6,8 @@
 > 本仓库不是"课程作业合集"，而是一次**真打包、真部署、真调接口、真压测**的完整测试实践。
 > 所有数字都来自本机实测，报告中的每条结论都可以追溯到原始数据或代码。
 
-**在线作品集**：`https://<your-github>.github.io/mall-test-portfolio/`（部署后替换为你的地址）
+**在线作品集**：<https://amytrd.github.io/mall-test-portfolio/>  
+**GitHub 仓库**：<https://github.com/amytrd/mall-test-portfolio>
 
 ![作品集预览](docs/assets/img/portfolio-preview.png)
 
@@ -152,8 +153,8 @@ mall-search  搜索服务     :8081   ← 因缺少 Elasticsearch + 配置错误
 2. 仓库 **Settings → Pages**：
    - Source 选择 **Deploy from a branch**
    - Branch 选择 `main`，目录选择 **`/docs`**
-3. 等待 1–2 分钟，访问 `https://<your-github>.github.io/mall-test-portfolio/`。
-4. 将本 README 和 `docs/index.html` 中的 `<your-github>` 替换为你的用户名。
+3. 等待 1–2 分钟，访问 `https://amytrd.github.io/mall-test-portfolio/`。
+4. 本仓库已配置为 `amytrd`；如果你 fork 或改名，请同步替换 README 与 `docs/index.html` 中的用户名。
 
 > 报告页由 GitHub Pages 内置的 Jekyll 渲染 Markdown，无需本地构建。
 > 本地预览：`cd docs; python -m http.server 8000`（Markdown 报告页需部署后由 Jekyll 渲染）。
