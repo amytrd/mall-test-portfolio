@@ -1,0 +1,129 @@
+# ============================================================
+# 登录接口测试数据
+#
+# 【怎么用】在 YAML 里加一条，就多一个测试用例，不需要改任何 Python 代码。
+#          这就是"数据驱动"的价值 —— 测试和代码解耦。
+#
+# 【字段说明】
+#   id            用例编号（会显示在测试报告里，方便和缺陷单对应）
+#   title         用例标题（说明测什么）
+#   body          请求体 JSON
+#   expect_code   期望的业务码
+#                  200 = 成功 / 404 = 参数校验失败 / 500 = 业务异常
+#   expect_msg    期望的提示语关键词（可选，做包含匹配）
+#   note          备注：为什么这么设计这条用例（面试和交接时很有用）
+# ============================================================
+
+login_cases:
+  # ---------- 异常场景：凭证错误 ----------
+  - id: L-02
+    title: 正确用户名 + 错误密码
+    body:
+      username: admin
+      password: wrong_password_123
+    expect_code: 500
+    expect_msg: 密码不正确
+    note: >
+      注意返回的是 500 而不是 404。
+      密码错误走的是 Asserts.fail() 抛 ApiException 的路径，
+      与"用户不存在"（404）不是同一条分支 —— 这个差异见 L-03。
+
+  - id: L-03
+    title: 不存在的用户名
+    body:
+      username: definitely_not_exist_user
+      password: macro123
+    expect_code: 404
+    expect_msg: 用户名或密码错误
+    note: >
+      与 L-02 对比：用户不存在返回 404「用户名或密码错误」，
+      密码错误返回 500「密码不正确」。
+      两者返回码不同 => 可以据此枚举系统里存在哪些用户名，
+      这是一个真实的安全缺陷（用户枚举），已记录在缺陷报告中。
+
+  # ---------- 边界场景：空值 ----------
+  - id: L-04
+    title: 用户名为空字符串
+    body:
+      username: ""
+      password: macro123
+    expect_code: 404
+    expect_msg: username
+    note: >
+      由 @NotEmpty 校验拦截，返回 404（参数校验失败）。
+      提示语形如 "username不能为空" —— 字段名和提示语之间没有分隔符，
+      这是 GlobalExceptionHandler 里字符串直接拼接导致的格式问题。
+
+  - id: L-05
+    title: 密码为空字符串
+    body:
+      username: admin
+      password: ""
+    expect_code: 404
+    expect_msg: password
+    note: 同上，@NotEmpty 校验生效。
+
+  - id: L-06
+    title: 请求体为空对象
+    body: {}
+    expect_code: 404
+    # 【故意不设 expect_msg】
+    #
+    # 这里千万别断言具体是哪个字段报错。
+    # 空对象时 username 和 password 都缺失，而 Hibernate Validator
+    # 对多个约束的**校验顺序是不确定的**（取决于反射返回的字段顺序，
+    # 不同 JDK 版本、不同运行次数都可能不同）。
+    #
+    # 实测：第一次跑报 "password不能为空"，第二次跑报 "username不能为空"。
+    # 如果绑死了 expect_msg，就会变成 flaky test（时好时坏）——
+    # 这种用例比没有用例更糟糕：它会消耗团队对测试结果的信任。
+    #
+    # 【原则】只断言**确定的部分**（code=404 参数校验失败），
+    #         不确定的部分（具体哪个字段）不做断言。
+    note: >
+      两个必填字段都缺失，应返回 404 参数校验失败。
+      不断言具体是哪个字段报错 —— 校验顺序不确定，绑死会导致 flaky test。
+
+  - id: L-07
+    title: 只传 username 不传 password
+    body:
+      username: admin
+    expect_code: 404
+    expect_msg: password
+    note: 缺少必填字段，应被校验拦截。
+
+  # ---------- 安全场景 ----------
+  - id: L-08
+    title: SQL 注入式用户名
+    body:
+      username: "admin' OR '1'='1"
+      password: anything
+    expect_code: 404
+    expect_msg: 用户名或密码错误
+    note: >
+      验证注入不生效。MyBatis 使用 #{} 预编译参数化，
+      payload 会被当作普通字符串处理，不会改变 SQL 语义。
+      断言要点：绝不能返回 200（否则说明注入成功了）。
+
+  - id: L-09
+    title: 特殊字符用户名（XSS 探测）
+    body:
+      username: "<script>alert(1)</script>"
+      password: x
+    expect_code: 404
+    note: >
+      验证服务端不会因为特殊字符而报 500（健壮性）。
+      返回 404「用户名或密码错误」说明被正常当作普通字符串处理。
+
+  - id: L-11
+    title: 用户名前后带空格
+    body:
+      username: "  admin  "
+      password: macro123
+    expect_code: 404
+    expect_msg: 用户名或密码错误
+    note: >
+      验证服务端是否对用户名做 trim 处理。
+      实测未做 trim，所以带空格会被当作不存在的用户名。
+      这属于边界行为记录 —— 若业务上希望"用户手滑多打空格也能登录"，
+      则这是一个可改进点。

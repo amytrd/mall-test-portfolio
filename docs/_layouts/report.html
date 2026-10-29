@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title }} · mall 测试作品集</title>
+  <meta name="description" content="{{ page.description | default: site.description }}">
+  <link rel="stylesheet" href="../assets/css/report.css">
+</head>
+<body>
+  <header class="report-nav">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">QA</span>
+      <span>mall 测试作品集</span>
+    </a>
+    <nav>
+      <a href="../index.html#deliverables">全部报告</a>
+      <a href="../index.html#defects">缺陷</a>
+      <a href="../index.html#performance">性能</a>
+    </nav>
+  </header>
+
+  <main class="report-shell">
+    <article class="report">
+      <p class="report-eyebrow">测试文档 · {{ page.title }}</p>
+      <h1>{{ page.title }}</h1>
+      {{ content }}
+    </article>
+  </main>
+
+  <footer class="report-footer">
+    <p>mall 电商系统 · 软件测试作品集 · 2026</p>
+    <p><a href="../index.html">返回作品集首页</a></p>
+  </footer>
+</body>
+</html>

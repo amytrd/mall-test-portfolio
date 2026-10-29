@@ -1,0 +1,17 @@
+title: mall 电商系统 · 测试作品集
+description: 软件测试工程师作品集 —— 功能/接口/性能测试与缺陷根因分析
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+  auto_ids: true
+  syntax_highlighter: rouge
+
+defaults:
+  - scope:
+      path: "reports"
+    values:
+      layout: report
+
+sass:
+  style: compressed

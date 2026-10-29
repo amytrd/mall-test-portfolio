@@ -1,0 +1,17 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Test run outputs (keep the curated HTML evidence in docs/evidence/)
+test-artifacts/pytest/reports/
+test-artifacts/pytest/logs/
+test-artifacts/jmeter/results/
+*.log
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
